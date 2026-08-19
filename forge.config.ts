@@ -10,7 +10,7 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
 import fs from "node:fs";
 import path from "node:path";
-
+import { PublisherS3 } from "@electron-forge/publisher-s3";
 // import { globSync } from "node:fs";
 
 import { execSync } from "node:child_process";
@@ -187,57 +187,69 @@ const config: ForgeConfig = {
         );
       }
     },
-    postMake: async (config, makeResults) => {
-      const vaultHost = process.env.VAULT_HOST || "https://dl.learnet.app";
-      const botToken = process.env.BOT_TOKEN;
+//     postMake: async (config, makeResults) => {
+//       const vaultHost = process.env.VAULT_HOST || "https://dl.learnet.app";
+//       const botToken = process.env.BOT_TOKEN;
 
-      if (!botToken) {
-        throw new Error("BOT_TOKEN environment variable is required to upload releases to Vault.");
-      }
+//       if (!botToken) {
+//         throw new Error("BOT_TOKEN environment variable is required to upload releases to Vault.");
+//       }
 
-      for (const result of makeResults) {
-        for (const filePath of result.artifacts) {
-          const file = path.basename(filePath);
-          if (
-            file.endsWith(".zip") ||
-            file.endsWith(".exe") ||
-            file.endsWith(".AppImage") ||
-            file.endsWith(".deb") ||
-            file.endsWith(".rpm")
-          ) {
-            console.log(`Uploading ${file} to Vault releases...`);
+//       for (const result of makeResults) {
+//         for (const filePath of result.artifacts) {
+//           const file = path.basename(filePath);
+//           if (
+//             file.endsWith(".zip") ||
+//             file.endsWith(".exe") ||
+//             file.endsWith(".AppImage") ||
+//             file.endsWith(".deb") ||
+//             file.endsWith(".rpm")
+//           ) {
+//             console.log(`Uploading ${file} to Vault releases...`);
 
-            const formData = new FormData();
-            const fileBlob = new Blob([fs.readFileSync(filePath)]);
-            formData.append("file", fileBlob, file);
+//             const formData = new FormData();
+//             const fileBlob = new Blob([fs.readFileSync(filePath)]);
+//             formData.append("file", fileBlob, file);
 
-let response;
-try {
-  response = await fetch(`${vaultHost}/releases`, {
-    method: "POST",
-    headers: {
-      "X-Bot-Token": botToken,
-    },
-    body: formData,
-  });
-} catch (err) {
-  console.error("fetch error:", err);
-  console.error("cause:", err.cause);
-  throw err;
-}
+// let response;
+// try {
+//   response = await fetch(`${vaultHost}/releases`, {
+//     method: "POST",
+//     headers: {
+//       "X-Bot-Token": botToken,
+//     },
+//     body: formData,
+//   });
+// } catch (err) {
+//   console.error("fetch error:", err);
+//   console.error("cause:", err.cause);
+//   throw err;
+// }
 
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(`Failed to upload ${file} to Vault: ${response.status} ${errorText}`);
-            }
+//             if (!response.ok) {
+//               const errorText = await response.text();
+//               throw new Error(`Failed to upload ${file} to Vault: ${response.status} ${errorText}`);
+//             }
 
-            const data = await response.json();
-            console.log(`Successfully uploaded ${file}. File ID: ${data.id}`);
-          }
-        }
-      }
-    },
+//             const data = await response.json();
+//             console.log(`Successfully uploaded ${file}. File ID: ${data.id}`);
+//           }
+//         }
+//       }
+//     },
   },
+  publishers: [
+    new PublisherS3({
+      bucket: process.env.R2_BUCKET!,
+      region: "auto",
+      accessKeyId: process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+      endpoint: process.env.R2_ENDPOINT, // https://<account_id>.r2.cloudflarestorage.com
+      s3ForcePathStyle: true,
+      public: true,
+      folder: "releases", // -> releases/<platform>-<arch>/<file>
+    }),
+  ],
   plugins: [
     {
       name: "@electron-forge/plugin-auto-unpack-natives",
