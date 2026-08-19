@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=Learnet
-Comment=Open source, user-first chat platform
+Comment=flashcards, user-first flashcards app
 Exec=learnet-desktop
 Terminal=false
 Type=Application
-Icon=chat.learnet.LearnetDesktop
+Icon=app.learnet.LearnetDesktop
 Categories=Network;InstantMessaging
 StartupWMClass=learnet-desktop
 X-Desktop-File-Install-Version=0.26
-X-Flatpak=chat.learnet.LearnetDesktop
+X-Flatpak=app.learnet.LearnetDesktop

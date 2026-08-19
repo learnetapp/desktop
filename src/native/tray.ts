@@ -38,6 +38,10 @@ export function initTray() {
 }
 
 export function updateTrayMenu() {
+  if (!tray || !mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: "Learnet for Desktop", type: "normal", enabled: false },

@@ -14,14 +14,35 @@ import path from "node:path";
 
 // import { globSync } from "node:fs";
 
+import { execSync } from "node:child_process";
+
 const STRINGS = {
   author: "Learnet Platforms LTD",
   name: "Learnet",
   execName: "learnet-desktop",
-  description: "Open source user-first chat platform.",
+  description: "Open source user-first flashcards app.",
 };
 
 const ASSET_DIR = "assets/desktop";
+
+function isPreTahoeMacOS(): boolean {
+  if (process.platform !== "darwin") return false;
+  const version = execSync("sw_vers -productVersion").toString().trim();
+  const major = parseInt(version.split(".")[0], 10);
+  return major < 26;
+}
+
+const iconIconPath = `${ASSET_DIR}/icon.icon`;
+const iconIconBackupPath = `${ASSET_DIR}/icon.icon.bak`;
+
+if (isPreTahoeMacOS() && fs.existsSync(iconIconPath)) {
+  fs.renameSync(iconIconPath, iconIconBackupPath);
+  process.on("exit", () => {
+    if (fs.existsSync(iconIconBackupPath)) {
+      fs.renameSync(iconIconBackupPath, iconIconPath);
+    }
+  });
+}
 
 /**
  * Build targets for the desktop app
@@ -42,7 +63,7 @@ const makers: ForgeConfig["makers"] = [
   new MakerZIP({}),
   new MakerFlatpak({
     options: {
-      id: "chat.learnet.LearnetDesktop",
+      id: "app.learnet.LearnetDesktop",
       description: STRINGS.description,
       productName: STRINGS.name,
       productDescription: STRINGS.description,
@@ -92,7 +113,7 @@ const makers: ForgeConfig["makers"] = [
         "--talk-name=com.canonical.Unity",
         "--env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons",
         "--env=ELECTRON_TRASH=gio",
-        "--env=TMPDIR=xdg-run/app/chat.learnet.LearnetDesktop",
+        "--env=TMPDIR=xdg-run/app/app.learnet.LearnetDesktop",
       ],
       files: [],
     } as MakerFlatpakOptionsConfig,
@@ -128,7 +149,7 @@ const config: ForgeConfig = {
     executableName: STRINGS.execName,
     icon:
       process.platform === "darwin"
-        ? `${ASSET_DIR}/icon.icon`
+        ? `${ASSET_DIR}/icon.icns`
         : `${ASSET_DIR}/icon`,
     osxSign: {
       optionsForFile: () => {
@@ -206,7 +227,7 @@ const config: ForgeConfig = {
   publishers: [
     new PublisherGithub({
       repository: {
-        owner: "learnet",
+        owner: "learnetapp",
         name: "desktop",
       },
     }),

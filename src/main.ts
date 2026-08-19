@@ -50,13 +50,13 @@ if (acquiredLock) {
       config.firstLaunch = false;
     }
 
-    initTray();
+    // initTray();
     initDiscordRpc();
     initVirtualMic();
 
     // Windows specific fix for notifications
     if (process.platform === "win32") {
-      app.setAppUserModelId("chat.learnet.notifications");
+      app.setAppUserModelId("app.learnet.notifications");
     }
   });
 

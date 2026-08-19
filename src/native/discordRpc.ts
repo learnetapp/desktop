@@ -17,7 +17,7 @@ export async function initDiscordRpc() {
     rpc.on("ready", () =>
       rpc.setActivity({
         state: "learnet.app",
-        details: "Chatting with others",
+        details: "Studying on Learnet",
         largeImageKey: "qr",
         largeImageText: "Join Learnet!",
         buttons: [

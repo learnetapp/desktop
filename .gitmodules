@@ -1,4 +1,4 @@
 [submodule "assets"]
 	path = assets
-	url = https://github.com/learnett/assets
+	url = https://github.com/learnetapp/assets
 	update = none

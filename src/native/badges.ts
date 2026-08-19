@@ -47,7 +47,7 @@ export async function setBadgeCount(count: number) {
         signature: "sa{sv}",
         body: [
           process.env.container === "1"
-            ? "application://chat.learnet.LearnetDesktop.desktop" // flatpak handling
+            ? "application://app.learnet.LearnetDesktop.desktop" // flatpak handling
             : "application://learnet-desktop.desktop",
           [
             ["count", ["x", Math.min(count, 0)]],

@@ -102,8 +102,8 @@ export function createMainWindow() {
   });
 
   // update tray menu when window is shown/hidden
-  mainWindow.on("show", updateTrayMenu);
-  mainWindow.on("hide", updateTrayMenu);
+//   mainWindow.on("show", updateTrayMenu);
+//   mainWindow.on("hide", updateTrayMenu);
 
   // keep track of window state
   function generateState() {
