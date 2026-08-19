@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Learnet
+Comment=Open source, user-first chat platform
+Exec=learnet-desktop
+Terminal=false
+Type=Application
+Icon=chat.learnet.LearnetDesktop
+Categories=Network;InstantMessaging
+StartupWMClass=learnet-desktop
+X-Desktop-File-Install-Version=0.26
+X-Flatpak=chat.learnet.LearnetDesktop
