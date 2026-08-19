@@ -211,13 +211,20 @@ const config: ForgeConfig = {
             const fileBlob = new Blob([fs.readFileSync(filePath)]);
             formData.append("file", fileBlob, file);
 
-            const response = await fetch(`${vaultHost}/releases`, {
-              method: "POST",
-              headers: {
-                "X-Bot-Token": botToken,
-              },
-              body: formData,
-            });
+let response;
+try {
+  response = await fetch(`${vaultHost}/releases`, {
+    method: "POST",
+    headers: {
+      "X-Bot-Token": botToken,
+    },
+    body: formData,
+  });
+} catch (err) {
+  console.error("fetch error:", err);
+  console.error("cause:", err.cause);
+  throw err;
+}
 
             if (!response.ok) {
               const errorText = await response.text();
