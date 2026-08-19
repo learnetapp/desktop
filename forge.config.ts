@@ -188,7 +188,7 @@ const config: ForgeConfig = {
       }
     },
     postMake: async (config, makeResults) => {
-      const vaultHost = process.env.VAULT_HOST || "https://learnet.app/vault";
+      const vaultHost = process.env.VAULT_HOST || "https://dl.learnet.app";
       const botToken = process.env.BOT_TOKEN;
 
       if (!botToken) {
