@@ -207,7 +207,7 @@ const config: ForgeConfig = {
     new PublisherGithub({
       repository: {
         owner: "learnet",
-        name: "for-desktop",
+        name: "desktop",
       },
     }),
   ],

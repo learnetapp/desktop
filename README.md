@@ -2,12 +2,12 @@
 <h1>
   Learnet for Desktop
   
-  [![Stars](https://img.shields.io/github/stars/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/stargazers)
-  [![Forks](https://img.shields.io/github/forks/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/network/members)
-  [![Pull Requests](https://img.shields.io/github/issues-pr/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/pulls)
-  [![Issues](https://img.shields.io/github/issues/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/issues)
-  [![Contributors](https://img.shields.io/github/contributors/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/graphs/contributors)
-  [![License](https://img.shields.io/github/license/learnet/for-desktop?style=flat-square&logoColor=white)](https://github.com/learnett/for-desktop/blob/main/LICENSE)
+  [![Stars](https://img.shields.io/github/stars/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/stargazers)
+  [![Forks](https://img.shields.io/github/forks/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/network/members)
+  [![Pull Requests](https://img.shields.io/github/issues-pr/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/pulls)
+  [![Issues](https://img.shields.io/github/issues/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/issues)
+  [![Contributors](https://img.shields.io/github/contributors/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/graphs/contributors)
+  [![License](https://img.shields.io/github/license/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnett/desktop/blob/main/LICENSE)
 </h1>
 Application for Windows, macOS, and Linux.
 </div>
@@ -36,8 +36,8 @@ Then proceed to setup:
 
 ```bash
 # clone the repository
-git clone --recursive https://github.com/learnett/for-desktop learnet-for-desktop
-cd learnet-for-desktop
+git clone --recursive https://github.com/learnett/desktop learnet-desktop
+cd learnet-desktop
 
 # Install tools from mise
 mise install
