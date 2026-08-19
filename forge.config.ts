@@ -223,54 +223,53 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
-  publishers: [
+publishers: [
     {
-      name: "@electron-forge/publisher-custom",
-      platforms: ["darwin", "win32", "linux"],
-      config: {
-        publisher: async (_, releaseDirectory) => {
-          const vaultHost = process.env.VAULT_HOST || "https://learnet.app/vault";
-          const botToken = process.env.BOT_TOKEN;
+      name: 'learnet-vault-publisher',
+      platforms: ['darwin', 'win32', 'linux'],
+      async initialize() {},
+      async publish({ releaseDirectory }) {
+        const vaultHost = process.env.VAULT_HOST || "https://learnet.app/vault";
+        const botToken = process.env.BOT_TOKEN;
 
-          if (!botToken) {
-            throw new Error("BOT_TOKEN environment variable is required to upload releases to Vault.");
-          }
+        if (!botToken) {
+          throw new Error("BOT_TOKEN environment variable is required to upload releases to Vault.");
+        }
 
-          const files = fs.readdirSync(releaseDirectory);
-          for (const file of files) {
-            if (
-              file.endsWith(".zip") ||
-              file.endsWith(".exe") ||
-              file.endsWith(".AppImage") ||
-              file.endsWith(".deb") ||
-              file.endsWith(".rpm")
-            ) {
-              const filePath = path.join(releaseDirectory, file);
-              console.log(`Uploading ${file} to Vault releases...`);
+        const files = fs.readdirSync(releaseDirectory);
+        for (const file of files) {
+          if (
+            file.endsWith(".zip") ||
+            file.endsWith(".exe") ||
+            file.endsWith(".AppImage") ||
+            file.endsWith(".deb") ||
+            file.endsWith(".rpm")
+          ) {
+            const filePath = path.join(releaseDirectory, file);
+            console.log(`Uploading ${file} to Vault releases...`);
 
-              const formData = new FormData();
-              const fileBlob = new Blob([fs.readFileSync(filePath)]);
-              formData.append("file", fileBlob, file);
+            const formData = new FormData();
+            const fileBlob = new Blob([fs.readFileSync(filePath)]);
+            formData.append("file", fileBlob, file);
 
-              const response = await fetch(`${vaultHost}/releases`, {
-                method: "POST",
-                headers: {
-                  "X-Bot-Token": botToken,
-                },
-                body: formData,
-              });
+            const response = await fetch(`${vaultHost}/releases`, {
+              method: "POST",
+              headers: {
+                "X-Bot-Token": botToken,
+              },
+              body: formData,
+            });
 
-              if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to upload ${file} to Vault: ${response.status} ${errorText}`);
-              }
-
-              const data = await response.json();
-              console.log(`Successfully uploaded ${file}. File ID: ${data.id}`);
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Failed to upload ${file} to Vault: ${response.status} ${errorText}`);
             }
+
+            const data = await response.json();
+            console.log(`Successfully uploaded ${file}. File ID: ${data.id}`);
           }
-        },
-      },
+        }
+      }
     },
   ],
 };
