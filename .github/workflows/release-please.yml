@@ -85,6 +85,7 @@ jobs:
         env:
           PLATFORM: ${{ matrix.os }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Upload artifact for AppImage build
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
