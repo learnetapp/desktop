@@ -3,6 +3,11 @@ import { contextBridge, ipcRenderer } from "electron";
 import { version } from "../../package.json";
 
 contextBridge.exposeInMainWorld("native", {
+  isElectron: true,
+  platform: process.platform,
+  goBack: () => ipcRenderer.send("nav-back"),
+  goForward: () => ipcRenderer.send("nav-forward"),
+
   versions: {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
