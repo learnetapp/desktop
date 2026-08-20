@@ -254,8 +254,18 @@ export function createMainWindow() {
   );
 
   // push world events to the window
-  ipcMain.on("nav-back", () => mainWindow.webContents.navigationHistory.canGoBack() && mainWindow.webContents.navigationHistory.goBack());
-  ipcMain.on("nav-forward", () => mainWindow.webContents.navigationHistory.canGoForward() && mainWindow.webContents.navigationHistory.goForward());
+  ipcMain.on(
+    "nav-back",
+    () =>
+      mainWindow.webContents.navigationHistory.canGoBack() &&
+      mainWindow.webContents.navigationHistory.goBack(),
+  );
+  ipcMain.on(
+    "nav-forward",
+    () =>
+      mainWindow.webContents.navigationHistory.canGoForward() &&
+      mainWindow.webContents.navigationHistory.goForward(),
+  );
   ipcMain.on("minimise", () => mainWindow.minimize());
   ipcMain.on("maximise", () =>
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize(),
