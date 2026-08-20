@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld("native", {
   platform: process.platform,
   goBack: () => ipcRenderer.send("nav-back"),
   goForward: () => ipcRenderer.send("nav-forward"),
+  closeWindow: () => ipcRenderer.send("close-window"),
 
   versions: {
     node: () => process.versions.node,

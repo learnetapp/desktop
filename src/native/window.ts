@@ -266,6 +266,9 @@ export function createMainWindow() {
       mainWindow.webContents.navigationHistory.canGoForward() &&
       mainWindow.webContents.navigationHistory.goForward(),
   );
+  ipcMain.on("close-window", () => {
+    mainWindow.close();
+  });
   ipcMain.on("minimise", () => mainWindow.minimize());
   ipcMain.on("maximise", () =>
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize(),
