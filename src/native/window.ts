@@ -9,6 +9,7 @@ import {
   ipcMain,
   nativeImage,
   session,
+  shell,
 } from "electron";
 
 import windowIconAsset from "../../assets/desktop/icon.png?asset";
@@ -254,6 +255,9 @@ export function createMainWindow() {
   );
 
   // push world events to the window
+  ipcMain.on("open-external-auth", (_event, url: string) => {
+    shell.openExternal(url);
+  });
   ipcMain.on(
     "nav-back",
     () =>

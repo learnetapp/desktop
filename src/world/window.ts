@@ -9,6 +9,21 @@ contextBridge.exposeInMainWorld("native", {
   goForward: () => ipcRenderer.send("nav-forward"),
   closeWindow: () => ipcRenderer.send("close-window"),
 
+  openExternalAuth: (url: string) =>
+    ipcRenderer.send("open-external-auth", url),
+
+  onDeepLinkAuth: (
+    callback: (payload: {
+      token: string;
+      id: string | null;
+      userId: string | null;
+    }) => void,
+  ) => {
+    const eventName = "deep-link-auth";
+    ipcRenderer.removeAllListeners(eventName);
+    ipcRenderer.on(eventName, (_event, payload) => callback(payload));
+  },
+
   versions: {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
