@@ -22,15 +22,10 @@ jobs:
       release_created: ${{ steps.rp.outputs.release_created }}
       release_version: ${{ steps.rp.outputs.version }}
     steps:
-      - id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ secrets.GH_LEARNET_RELEASE_APP_ID }}
-          private-key: ${{ secrets.GH_LEARNET_RELEASE_APP_PRIVATE_KEY }}
       - id: rp
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.FORGEJO_TOKEN }}
           config-file: release-please-config.json
 
   publish-release:
@@ -84,7 +79,7 @@ jobs:
           pnpm run publish
         env:
           PLATFORM: ${{ matrix.os }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
           # BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -152,6 +147,13 @@ jobs:
           merge-multiple: true
 
       - name: Update release with AppImage
-        run: gh release upload v${{ needs.release-please.outputs.release_version }} Learnet-*.AppImage*
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          VERSION: ${{ needs.release-please.outputs.release_version }}
+        run: |
+          for file in Learnet-*.AppImage*; do
+            curl --fail \
+              -X POST \
+              -H "Authorization: token ${FORGEJO_TOKEN}" \
+              -F "attachment=@${file}" \
+              "http://10.0.0.22:3000/api/packages/${{ github.repository }}/generic/${VERSION}/${file}"
+          done
