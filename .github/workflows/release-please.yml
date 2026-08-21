@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: release-please
+  group: create-release
   cancel-in-progress: true
 
 jobs:
@@ -83,7 +83,7 @@ jobs:
 
   publish-release:
     name: Publish App
-    needs: release-please
+    needs: create-release
     if: ${{ success() }}
     runs-on: ${{ matrix.os }}
 
@@ -147,7 +147,7 @@ jobs:
           path: ./out/make/zip/linux/${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}/Learnet-linux-*.zip
   
   build-appimage:
-    needs: [release-please, publish-release]
+    needs: [create-release, publish-release]
     if: ${{ success() }}
     runs-on: ${{ matrix.os }}
     strategy:
