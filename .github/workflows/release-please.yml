@@ -23,7 +23,7 @@ jobs:
       release_version: ${{ steps.rp.outputs.version }}
     steps:
       - id: rp
-        uses: googleapis/release-please-action@v4
+        uses: https://github.com/googleapis/release-please-action@v4
         with:
           token: ${{ secrets.FORGEJO_TOKEN }}
           config-file: release-please-config.json
