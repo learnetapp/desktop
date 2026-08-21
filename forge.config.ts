@@ -68,7 +68,7 @@ const makers: ForgeConfig["makers"] = [
       { x: 410, y: 220, type: "link", path: "/Applications" },
     ],
   }),
-  new MakerZIP({}),
+  ...(process.platform !== "darwin" ? [new MakerZIP({})] : []),
   new MakerFlatpak({
     options: {
       id: "app.learnet.LearnetDesktop",
