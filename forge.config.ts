@@ -63,17 +63,22 @@ new MakerDMG({
   background: `${ASSET_DIR}/dmg-background.png`,
   icon: `${ASSET_DIR}/icon.icns`,
   format: "ULFO",
+  additionalDMGOptions: {
+    window: {
+      size: { width: 540, height: 380 },
+    },
+  },
 
   contents: (opts) => [
     {
-      x: 130,
-      y: 220,
+      x: 140,
+      y: 190,
       type: "file",
       path: opts.appPath,
     },
     {
-      x: 410,
-      y: 220,
+      x: 400,
+      y: 190,
       type: "link",
       path: "/Applications",
     },
