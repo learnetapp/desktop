@@ -84,7 +84,7 @@ jobs:
   publish-release:
     name: Publish App
     needs: release-please
-    if: ${{ needs.release.outputs.release_created == 'true' }}
+    if: ${{ success() }}
     runs-on: ${{ matrix.os }}
 
     permissions:
@@ -148,7 +148,7 @@ jobs:
   
   build-appimage:
     needs: [release-please, publish-release]
-    if: ${{ needs.release.outputs.release_created == 'true' }}
+    if: ${{ success() }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
