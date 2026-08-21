@@ -59,35 +59,26 @@ const makers: ForgeConfig["makers"] = [
     setupExe: `${STRINGS.execName}-setup.exe`,
     copyright: "Copyright (C) 2026 Learnet Platforms LTD",
   }),
-  new MakerDMG({
-    background: `${ASSET_DIR}/dmg-background.png`,
-    icon: `${ASSET_DIR}/icon.icns`,
-    format: "ULFO",
+new MakerDMG({
+  background: `${ASSET_DIR}/dmg-background.png`,
+  icon: `${ASSET_DIR}/icon.icns`,
+  format: "ULFO",
 
-    additionalDMGOptions: {
-      window: {
-        size: {
-          width: 540,
-          height: 380,
-        },
-      },
+  contents: (opts) => [
+    {
+      x: 130,
+      y: 220,
+      type: "file",
+      path: opts.appPath,
     },
-
-    contents: (opts) => [
-      {
-        x: 130,
-        y: 220,
-        type: "file",
-        path: opts.appPath,
-      },
-      {
-        x: 410,
-        y: 220,
-        type: "link",
-        path: "/Applications",
-      },
-    ],
-  }),
+    {
+      x: 410,
+      y: 220,
+      type: "link",
+      path: "/Applications",
+    },
+  ],
+}),
   ...(process.platform !== "darwin" ? [new MakerZIP({})] : []),
   new MakerFlatpak({
     options: {
