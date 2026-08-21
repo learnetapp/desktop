@@ -60,6 +60,7 @@ const makers: ForgeConfig["makers"] = [
     copyright: "Copyright (C) 2026 Learnet Platforms LTD",
   }),
   new MakerDMG({
+    name: STRINGS.name,
     background: `${ASSET_DIR}/dmg-background.png`,
     icon: `${ASSET_DIR}/icon.icns`,
     format: "ULFO",
