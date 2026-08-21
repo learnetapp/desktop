@@ -12,7 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { PublisherS3 } from "@electron-forge/publisher-s3";
 // import { globSync } from "node:fs";
-
+import { MakerDMG } from "@electron-forge/maker-dmg";
 import { execSync } from "node:child_process";
 
 const STRINGS = {
@@ -58,6 +58,15 @@ const makers: ForgeConfig["makers"] = [
     exe: `${STRINGS.execName}.exe`,
     setupExe: `${STRINGS.execName}-setup.exe`,
     copyright: "Copyright (C) 2026 Learnet Platforms LTD",
+  }),
+  new MakerDMG({
+    background: `${ASSET_DIR}/dmg-background.png`,
+    icon: `${ASSET_DIR}/icon.icns`,
+    format: "ULFO",
+    contents: [
+      { x: 130, y: 220, type: "file", path: `${STRINGS.name}.app` },
+      { x: 410, y: 220, type: "link", path: "/Applications" },
+    ],
   }),
   new MakerZIP({}),
   new MakerFlatpak({
