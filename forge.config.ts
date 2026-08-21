@@ -63,9 +63,20 @@ const makers: ForgeConfig["makers"] = [
     background: `${ASSET_DIR}/dmg-background.png`,
     icon: `${ASSET_DIR}/icon.icns`,
     format: "ULFO",
-    contents: [
-      { x: 130, y: 220, type: "file", path: `${STRINGS.name}.app` },
-      { x: 410, y: 220, type: "link", path: "/Applications" },
+
+    contents: (opts) => [
+      {
+        x: 130,
+        y: 220,
+        type: "file",
+        path: opts.appPath,
+      },
+      {
+        x: 410,
+        y: 220,
+        type: "link",
+        path: "/Applications",
+      },
     ],
   }),
   ...(process.platform !== "darwin" ? [new MakerZIP({})] : []),
