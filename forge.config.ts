@@ -64,6 +64,15 @@ const makers: ForgeConfig["makers"] = [
     icon: `${ASSET_DIR}/icon.icns`,
     format: "ULFO",
 
+    additionalDMGOptions: {
+      window: {
+        size: {
+          width: 540,
+          height: 380,
+        },
+      },
+    },
+
     contents: (opts) => [
       {
         x: 130,
