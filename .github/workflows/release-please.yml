@@ -83,7 +83,7 @@ jobs:
 
   publish-release:
     name: Publish App
-    needs: create-release
+    needs: release
     if: ${{ success() }}
     runs-on: ${{ matrix.os }}
 
@@ -147,7 +147,7 @@ jobs:
           path: ./out/make/zip/linux/${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}/Learnet-linux-*.zip
   
   build-appimage:
-    needs: [create-release, publish-release]
+    needs: [release, publish-release]
     if: ${{ success() }}
     runs-on: ${{ matrix.os }}
     strategy:
