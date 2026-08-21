@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@electron-forge/publisher-s3": "^7.11.2",
+    "@electron-forge/shared-types": "^7.11.2",
     "@homebridge/dbus-native": "^0.7.2",
     "auto-launch": "^5.0.6",
     "bufferutil": "^4.0.9",

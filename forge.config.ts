@@ -60,12 +60,14 @@ const makers: ForgeConfig["makers"] = [
     copyright: "Copyright (C) 2026 Learnet Platforms LTD",
   }),
 new MakerDMG({
-  background: `${ASSET_DIR}/dmg-background@2x.png`,
+  background: `${ASSET_DIR}/dmg-background.png`,
+
   icon: `${ASSET_DIR}/icon.icns`,
   format: "ULFO",
+
   additionalDMGOptions: {
     window: {
-      size: { width: 540, height: 380 },
+      size: { width: 540, height: 402 },
     },
   },
 
