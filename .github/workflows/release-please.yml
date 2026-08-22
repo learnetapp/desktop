@@ -113,7 +113,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+          sudo apt-get install -y flatpak flatpak-builder bubblewrap
           flatpak remote-add -u --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak install -y -u flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08
           flatpak install -y -u flathub org.electronjs.Electron2.BaseApp//stable
