@@ -274,7 +274,9 @@ const config: ForgeConfig = {
       endpoint: process.env.R2_ENDPOINT, // https://<account_id>.r2.cloudflarestorage.com
       s3ForcePathStyle: true,
       public: true,
-      folder: "releases", // -> releases/<platform>-<arch>/<file>
+      keyResolver: (fileName, platform, arch) => {
+        return `releases/${platform}/${arch}/${fileName}`;
+      },
     }),
   ],
   plugins: [
