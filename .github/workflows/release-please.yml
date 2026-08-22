@@ -133,7 +133,11 @@ jobs:
         run: pnpm ci
 
       - name: Publish
-        run: pnpm run publish
+        run: |
+          if [[ "${{ matrix.os }}" == macos* ]]; then
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          fi
+          pnpm run publish
         env:
           PLATFORM: ${{ matrix.os }}
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
