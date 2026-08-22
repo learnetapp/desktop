@@ -2,7 +2,7 @@ name: Release Please
 
 on:
   push:
-    branches: [main] # updates/opens the release PR when commits land on main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -85,6 +85,7 @@ jobs:
     name: Publish App
     needs: release
     if: ${{ success() }}
+
     runs-on: ${{ matrix.os }}
 
     permissions:
@@ -92,8 +93,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-26-intel]
-    
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - windows-latest
+          - macos-latest
+          - macos-26-intel
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,20 +126,17 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          # TODO: Figure out why 26 isn't working
           node-version: 24
-          cache: "pnpm"
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm ci
 
       - name: Publish
-        run: |
-          pnpm run publish
+        run: pnpm run publish
         env:
           PLATFORM: ${{ matrix.os }}
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
-          # BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -143,16 +146,22 @@ jobs:
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
         uses: actions/upload-artifact@v6
         with:
-          name: learnet-linux-package-${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}
-          path: ./out/make/zip/linux/${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}/Learnet-linux-*.zip
-  
+          name: learnet-linux-package-${{ matrix.os == 'ubuntu-latest' && 'x64' || 'arm64' }}
+          path: ./out/make/zip/linux/${{ matrix.os == 'ubuntu-latest' && 'x64' || 'arm64' }}/Learnet-linux-*.zip
+
   build-appimage:
+    name: Build AppImage (${{ matrix.arch }})
     needs: [release, publish-release]
     if: ${{ success() }}
-    runs-on: ${{ matrix.os }}
+
+    runs-on: ${{ matrix.arch == 'x64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
+
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm]
+        arch:
+          - x64
+          - arm64
+
     container: ghcr.io/pkgforge-dev/archlinux:latest
 
     steps:
@@ -162,11 +171,11 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v7
         with:
-          name: learnet-linux-package-${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}
+          name: learnet-linux-package-${{ matrix.arch }}
           path: /tmp/learnet
 
       - name: Preparing Container
-        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af # v2
+        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af
 
       - name: Install Dependencies
         run: /bin/sh ./.github/build/appimage/get-dependencies.sh
@@ -174,7 +183,7 @@ jobs:
       - name: Extract Artifact
         run: /bin/sh ./.github/build/appimage/extract-artifact.sh
         env:
-          BUILD_ARCH: ${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}
+          BUILD_ARCH: ${{ matrix.arch }}
           BUILD_VERSION: ${{ needs.release.outputs.release_version }}
 
       - name: Make & Test AppImage
@@ -183,12 +192,14 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
-          name: AppImage-${{ case(matrix.os == 'ubuntu-latest', 'x64', 'arm64') }}
+          name: AppImage-${{ matrix.arch }}
           path: dist
 
   publish-appimage:
+    name: Publish AppImages
     runs-on: ubuntu-latest
     needs: [release, build-appimage]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -202,6 +213,9 @@ jobs:
       - name: Upload AppImage to release
         env:
           VERSION: ${{ needs.release.outputs.release_version }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          FORGEJO_API_URL: ${{ env.FORGEJO_API_URL }}
+          FORGEJO_REPOSITORY: ${{ env.FORGEJO_REPOSITORY }}
         run: |
           RELEASE_ID=$(curl -s \
             -H "Authorization: token ${FORGEJO_TOKEN}" \
@@ -213,5 +227,5 @@ jobs:
               -X POST \
               -H "Authorization: token ${FORGEJO_TOKEN}" \
               -F "attachment=@${file}" \
-              "$FORGEJO_API_URL/repos/$FORGEJO_REPOSITORY/releases/${RELEASE_ID}/assets?name=$(basename "$file")"
+              "$FORGEJO_API_URL/repos/${FORGEJO_REPOSITORY}/releases/${RELEASE_ID}/assets?name=$(basename "$file")"
           done
