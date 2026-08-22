@@ -132,12 +132,6 @@ jobs:
       - name: Install dependencies
         run: pnpm ci
 
-      - name: Verify Xcode
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          xcode-select -p
-          xcodebuild -version
-
       - name: Publish
         run: pnpm run publish
         env:
