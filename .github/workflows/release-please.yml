@@ -93,12 +93,26 @@ jobs:
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - ubuntu-24.04-arm
-          - windows-latest
-          - macos-latest
-          - macos-26-intel
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+
+          - os: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+
+          - os: windows-latest
+            platform: win32
+            arch: x64
+
+          - os: macos-26-intel
+            platform: darwin
+            arch: x64
+
+          - os: macos-26-intel
+            platform: darwin
+            arch: arm64
 
     steps:
       - name: Checkout
@@ -133,7 +147,7 @@ jobs:
         run: pnpm ci
 
       - name: Publish
-        run: pnpm run publish
+        run: pnpm run publish -- --arch=${{ matrix.arch }}
         env:
           PLATFORM: ${{ matrix.os }}
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
