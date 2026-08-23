@@ -94,22 +94,27 @@ jobs:
     strategy:
       matrix:
         include:
+          # Linux x64
           - os: ubuntu-latest
             platform: linux
             arch: x64
 
+          # Linux ARM64
           - os: ubuntu-24.04-arm
             platform: linux
             arch: arm64
 
+          # Windows x64
           - os: windows-latest
             platform: win32
             arch: x64
 
+          # macOS Intel x64
           - os: macos-26-intel
             platform: darwin
             arch: x64
 
+          # macOS Apple Silicon ARM64
           - os: macos-26-intel
             platform: darwin
             arch: arm64
@@ -124,13 +129,16 @@ jobs:
         run: git -c submodule."assets".update=checkout submodule update --init assets
 
       - name: Install Flatpak Tooling and Runtimes
-        if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
+        if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder bubblewrap
           flatpak remote-add -u --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y -u flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08
-          flatpak install -y -u flathub org.electronjs.Electron2.BaseApp//stable
+          flatpak install -y -u flathub \
+            org.freedesktop.Platform//25.08 \
+            org.freedesktop.Sdk//25.08
+          flatpak install -y -u flathub \
+            org.electronjs.Electron2.BaseApp//stable
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -147,9 +155,9 @@ jobs:
         run: pnpm ci
 
       - name: Publish
-        run: pnpm run publish -- --arch=${{ matrix.arch }}
+        run: pnpm exec electron-forge publish --arch=${{ matrix.arch }}
         env:
-          PLATFORM: ${{ matrix.os }}
+          PLATFORM: ${{ matrix.platform }}
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -157,11 +165,11 @@ jobs:
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
 
       - name: Upload artifact for AppImage build
-        if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
+        if: matrix.platform == 'linux'
         uses: actions/upload-artifact@v6
         with:
-          name: learnet-linux-package-${{ matrix.os == 'ubuntu-latest' && 'x64' || 'arm64' }}
-          path: ./out/make/zip/linux/${{ matrix.os == 'ubuntu-latest' && 'x64' || 'arm64' }}/Learnet-linux-*.zip
+          name: learnet-linux-package-${{ matrix.arch }}
+          path: ./out/make/zip/linux/${{ matrix.arch }}/Learnet-linux-*.zip
 
   build-appimage:
     name: Build AppImage (${{ matrix.arch }})
