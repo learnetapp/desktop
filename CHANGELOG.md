@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/learnetapp/desktop/compare/v1.0.1...v1.0.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* extract linux tarball in appimage build ([0e6c098](https://github.com/learnetapp/desktop/commit/0e6c098d6c368807f54f53a60da624e5eb0779bc))
+
 ## [1.0.1](https://github.com/learnetapp/desktop/compare/v1.0.0...v1.0.1) (2026-09-19)
 
 
