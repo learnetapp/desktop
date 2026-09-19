@@ -15,6 +15,7 @@ import {
 import windowIconAsset from "../../assets/desktop/icon.png?asset";
 
 import { config } from "./config";
+
 // import { updateTrayMenu } from "./tray";
 
 // global reference to main window
