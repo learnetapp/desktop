@@ -1,0 +1,253 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: create-release
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      release_version: ${{ steps.release.outputs.release_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$FORGEJO_OUTPUT"
+          echo "Version: $VERSION"
+
+      - name: Check release
+        id: check
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $FORGEJO_TOKEN" \
+            "$FORGEJO_API_URL/repos/$FORGEJO_REPOSITORY/releases/tags/v${VERSION}")
+
+          if [ "$STATUS" = "200" ]; then
+            echo "exists=true" >> "$FORGEJO_OUTPUT"
+          else
+            echo "exists=false" >> "$FORGEJO_OUTPUT"
+          fi
+
+      - name: Create release
+        id: release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          curl --fail-with-body \
+            -X POST \
+            -H "Authorization: token $FORGEJO_TOKEN" \
+            -H "Content-Type: application/json" \
+            "$FORGEJO_API_URL/repos/$FORGEJO_REPOSITORY/releases" \
+            -d "{
+              \"tag_name\": \"v${VERSION}\",
+              \"name\": \"v${VERSION}\",
+              \"target_commitish\": \"main\",
+              \"body\": \"Release v${VERSION}\"
+            }"
+
+          echo "release_created=true" >> "$FORGEJO_OUTPUT"
+          echo "release_version=${VERSION}" >> "$FORGEJO_OUTPUT"
+
+      - name: Release already exists
+        id: existing
+        if: steps.check.outputs.exists == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo "release_created=false" >> "$FORGEJO_OUTPUT"
+          echo "release_version=${VERSION}" >> "$FORGEJO_OUTPUT"
+
+  publish-release:
+    name: Publish App
+    needs: release
+    if: ${{ success() }}
+
+    runs-on: ${{ matrix.os }}
+
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        include:
+          # Linux x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+
+          # Linux ARM64
+          - os: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+
+          # Windows x64
+          - os: windows-latest
+            platform: win32
+            arch: x64
+
+          # macOS Intel x64
+          - os: macos-26-intel
+            platform: darwin
+            arch: x64
+
+          # macOS Apple Silicon ARM64
+          - os: macos-26-intel
+            platform: darwin
+            arch: arm64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Checkout assets
+        run: git -c submodule."assets".update=checkout submodule update --init assets
+
+      - name: Install Flatpak Tooling and Runtimes
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder bubblewrap
+          flatpak remote-add -u --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install -y -u flathub \
+            org.freedesktop.Platform//25.08 \
+            org.freedesktop.Sdk//25.08
+          flatpak install -y -u flathub \
+            org.electronjs.Electron2.BaseApp//stable
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm ci
+
+      - name: Publish
+        run: pnpm exec electron-forge publish --arch=${{ matrix.arch }}
+        env:
+          PLATFORM: ${{ matrix.platform }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+
+      - name: Upload artifact for AppImage build
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v6
+        with:
+          name: learnet-linux-package-${{ matrix.arch }}
+          path: ./out/make/zip/linux/${{ matrix.arch }}/Learnet-linux-*.zip
+
+  build-appimage:
+    name: Build AppImage (${{ matrix.arch }})
+    needs: [release, publish-release]
+    if: ${{ success() }}
+
+    runs-on: ${{ matrix.arch == 'x64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
+
+    strategy:
+      matrix:
+        arch:
+          - x64
+          - arm64
+
+    container: ghcr.io/pkgforge-dev/archlinux:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: learnet-linux-package-${{ matrix.arch }}
+          path: /tmp/learnet
+
+      - name: Preparing Container
+        uses: pkgforge-dev/anylinux-setup-action@0964f2258d6c93d1391359978dde081fd8b3c6af
+
+      - name: Install Dependencies
+        run: /bin/sh ./.github/build/appimage/get-dependencies.sh
+
+      - name: Extract Artifact
+        run: /bin/sh ./.github/build/appimage/extract-artifact.sh
+        env:
+          BUILD_ARCH: ${{ matrix.arch }}
+          BUILD_VERSION: ${{ needs.release.outputs.release_version }}
+
+      - name: Make & Test AppImage
+        run: /bin/sh ./.github/build/appimage/make-appimage.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: AppImage-${{ matrix.arch }}
+          path: dist
+
+  publish-appimage:
+    name: Publish AppImages
+    runs-on: ubuntu-latest
+    needs: [release, build-appimage]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v7
+        with:
+          pattern: AppImage-*
+          merge-multiple: true
+
+      - name: Upload AppImage to release
+        env:
+          VERSION: ${{ needs.release.outputs.release_version }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          FORGEJO_API_URL: ${{ env.FORGEJO_API_URL }}
+          FORGEJO_REPOSITORY: ${{ env.FORGEJO_REPOSITORY }}
+        run: |
+          RELEASE_ID=$(curl -s \
+            -H "Authorization: token ${FORGEJO_TOKEN}" \
+            "$FORGEJO_API_URL/repos/$FORGEJO_REPOSITORY/releases/tags/v${VERSION}" \
+            | jq -r '.id')
+
+          for file in Learnet-*.AppImage*; do
+            curl --fail \
+              -X POST \
+              -H "Authorization: token ${FORGEJO_TOKEN}" \
+              -F "attachment=@${file}" \
+              "$FORGEJO_API_URL/repos/${FORGEJO_REPOSITORY}/releases/${RELEASE_ID}/assets?name=$(basename "$file")"
+          done

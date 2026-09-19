@@ -14,6 +14,7 @@ import { PublisherS3 } from "@electron-forge/publisher-s3";
 // import { globSync } from "node:fs";
 import { MakerDMG } from "@electron-forge/maker-dmg";
 import { execSync } from "node:child_process";
+import { PublisherGithub } from "@electron-forge/publisher-github";
 
 const STRINGS = {
   author: "Learnet Platforms LTD",
@@ -265,20 +266,12 @@ const config: ForgeConfig = {
 //       }
 //     },
   },
-  publishers: [
-    new PublisherS3({
-      bucket: process.env.R2_BUCKET!,
-      region: "auto",
-      accessKeyId: process.env.R2_ACCESS_KEY_ID,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-      endpoint: process.env.R2_ENDPOINT, // https://<account_id>.r2.cloudflarestorage.com
-      s3ForcePathStyle: true,
-      public: true,
-      keyResolver: (fileName, platform, arch) => {
-        return `releases/${platform}/${arch}/${fileName}`;
+  new PublisherGithub({
+      repository: {
+        owner: "learnetapp",
+        name: "desktop",
       },
-    }),
-  ],
+  }),
   plugins: [
     {
       name: "@electron-forge/plugin-auto-unpack-natives",
