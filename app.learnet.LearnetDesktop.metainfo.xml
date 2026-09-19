@@ -10,7 +10,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>AGPL-3.0</project_license>
   <icon type="remote" height="256" width="256">
-    https://raw.githubusercontent.com/learnet/assets/f106946659af67ad4f008588ac51570029b2fd47/desktop/icon.png</icon>
+    https://raw.githubusercontent.com/learnetapp/assets/c4ee8b55b56fdd3e7449e473661b8a111b8e1bd6/desktop/icon.png</icon>
   <description>
     <p>Learnet is a flashcards and notetaking app
     </p>
@@ -18,7 +18,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Main window</caption>
-      <image>https://raw.githubusercontent.com/learnet/desktop/b57faa2c59865fea15a879c9a9304271067d0020/screenshot.png</image>
+      <image>https://raw.githubusercontent.com/learnetapp/desktop/b57faa2c59865fea15a879c9a9304271067d0020/screenshot.png</image>
     </screenshot>
   </screenshots>
   <releases>

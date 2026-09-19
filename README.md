@@ -2,12 +2,12 @@
 <h1>
   Learnet for Desktop
   
-  [![Stars](https://img.shields.io/github/stars/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/stargazers)
-  [![Forks](https://img.shields.io/github/forks/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/network/members)
-  [![Pull Requests](https://img.shields.io/github/issues-pr/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/pulls)
-  [![Issues](https://img.shields.io/github/issues/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/issues)
-  [![Contributors](https://img.shields.io/github/contributors/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/graphs/contributors)
-  [![License](https://img.shields.io/github/license/learnet/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/blob/main/LICENSE)
+  [![Stars](https://img.shields.io/github/stars/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/stargazers)
+  [![Forks](https://img.shields.io/github/forks/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/network/members)
+  [![Pull Requests](https://img.shields.io/github/issues-pr/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/pulls)
+  [![Issues](https://img.shields.io/github/issues/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/issues)
+  [![Contributors](https://img.shields.io/github/contributors/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/graphs/contributors)
+  [![License](https://img.shields.io/github/license/learnetapp/desktop?style=flat-square&logoColor=white)](https://github.com/learnetapp/desktop/blob/main/LICENSE)
 </h1>
 Application for Windows, macOS, and Linux.
 </div>

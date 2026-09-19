@@ -7,7 +7,7 @@ export ARCH
 export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export ICON=https://raw.githubusercontent.com/learnet/assets/f106946659af67ad4f008588ac51570029b2fd47/desktop/icon.png
+export ICON=https://raw.githubusercontent.com/learnetapp/assets/c4ee8b55b56fdd3e7449e473661b8a111b8e1bd6/desktop/icon.png
 export DESKTOP=https://raw.githubusercontent.com/learnetapp/desktop/refs/heads/main/app.learnet.LearnetDesktop.desktop
 export DEPLOY_PIPEWIRE=1
 

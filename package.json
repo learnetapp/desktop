@@ -3,7 +3,7 @@
   "productName": "learnet-desktop",
   "version": "1.0.3",
   "main": ".vite/build/main.js",
-  "repository": "learnet/desktop",
+  "repository": "learnetapp/desktop",
   "scripts": {
     "start": "electron-forge start -- --no-sandbox",
     "package": "electron-forge package",
