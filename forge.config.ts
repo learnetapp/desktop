@@ -10,7 +10,6 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
 import fs from "node:fs";
 import path from "node:path";
-import { PublisherS3 } from "@electron-forge/publisher-s3";
 // import { globSync } from "node:fs";
 import { MakerDMG } from "@electron-forge/maker-dmg";
 import { execSync } from "node:child_process";
@@ -266,12 +265,14 @@ const config: ForgeConfig = {
 //       }
 //     },
   },
-  new PublisherGithub({
+  publishers: [
+    new PublisherGithub({
       repository: {
         owner: "learnetapp",
         name: "desktop",
       },
-  }),
+    }),
+  ],
   plugins: [
     {
       name: "@electron-forge/plugin-auto-unpack-natives",
