@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/learnetapp/desktop/compare/v1.0.2...v1.0.3) (2026-09-19)
+
+
+### Bug Fixes
+
+* point appimage build at learnetapp/desktop ([958f68b](https://github.com/learnetapp/desktop/commit/958f68b8d99ba35ced23afb1ac947e2423151a5f))
+
 ## [1.0.2](https://github.com/learnetapp/desktop/compare/v1.0.1...v1.0.2) (2026-09-19)
 
 
