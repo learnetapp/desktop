@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/learnetapp/desktop/compare/v1.0.3...v1.0.4) (2026-09-19)
+
+
+### Bug Fixes
+
+* use existing commit for appimage icon url ([fc4f107](https://github.com/learnetapp/desktop/commit/fc4f107f29e6d68db1873d873671b3450ccee1ec))
+
 ## [1.0.3](https://github.com/learnetapp/desktop/compare/v1.0.2...v1.0.3) (2026-09-19)
 
 
