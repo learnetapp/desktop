@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.6](https://github.com/learnetapp/desktop/compare/v1.0.5...v1.0.6) (2026-09-24)
+
+
+### Bug Fixes
+
+* comment out bot token ([f90d1ab](https://github.com/learnetapp/desktop/commit/f90d1ab5557feb088a858520286416b606850e49))
+* correct release job dependencies ([37b3d42](https://github.com/learnetapp/desktop/commit/37b3d4246e481a51a802171e84f2286cda57fdf8))
+* extract linux tarball in appimage build ([0e6c098](https://github.com/learnetapp/desktop/commit/0e6c098d6c368807f54f53a60da624e5eb0779bc))
+* migrate workflows to forgejo ([95434f3](https://github.com/learnetapp/desktop/commit/95434f3bd7c05228cf086677232cf996cbbcbe1e))
+* move PublisherGithub into publishers array ([0cac0fe](https://github.com/learnetapp/desktop/commit/0cac0fefd525ca8d28745aab43880ca146317b70))
+* point appimage build at learnetapp/desktop ([958f68b](https://github.com/learnetapp/desktop/commit/958f68b8d99ba35ced23afb1ac947e2423151a5f))
+* use existing commit for appimage icon url ([fc4f107](https://github.com/learnetapp/desktop/commit/fc4f107f29e6d68db1873d873671b3450ccee1ec))
+
 ## [1.0.4](https://github.com/learnetapp/desktop/compare/v1.0.3...v1.0.4) (2026-09-19)
 
 
