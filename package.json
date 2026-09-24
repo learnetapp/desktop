@@ -2,7 +2,6 @@
   "name": "learnet-desktop",
   "productName": "learnet-desktop",
   "version": "1.0.5",
->>>>>>> b7f09d974d43bc5e356fed59a17ee26814447c99
   "main": ".vite/build/main.js",
   "repository": "learnetapp/desktop",
   "scripts": {
